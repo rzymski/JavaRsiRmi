@@ -1,5 +1,7 @@
 package mainpcserver;
 
+import database.Person;
+
 import java.io.BufferedReader;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -10,7 +12,7 @@ import java.io.IOException;
 
 public class MyServerImpl extends UnicastRemoteObject implements MyServerInt {
     int i = 0;
-    String filePath = "D:\\programowanie\\java\\rsi\\JavaRsiRmi\\ps1\\src\\main\\bazadanych.txt";
+    String filePath = "D:\\programowanie\\java\\rsi\\JavaRsiRmi\\ps1\\src\\main\\database\\bazadanych.txt";
     protected MyServerImpl() throws RemoteException {
         super();
     }
@@ -91,6 +93,20 @@ public class MyServerImpl extends UnicastRemoteObject implements MyServerInt {
     }
 
     @Override
+    public Person getPersonByName(String name) throws RemoteException {
+        List<Person> people = loadDataFromFile(filePath);
+        //for (Person person : people) { System.out.println(person); }
+        for (Person person : people) {
+            if (person.getName().toLowerCase().equals(name.toLowerCase())) {
+                System.out.println("Serwer znalazł w bazie danych osobę o imieniu %s %s".formatted(name, person));
+                return person;
+            }
+        }
+        System.out.println("Serwer nie znalazł w bazie danych osoby o imieniu %s".formatted(name));
+        return null;
+    }
+
+    @Override
     public List<Person> getAllPeople() throws RemoteException {
         List<Person> people = loadDataFromFile(filePath);
         System.out.println("Serwer zwrócił listę %d osób.".formatted(people.size()));
@@ -102,6 +118,6 @@ public class MyServerImpl extends UnicastRemoteObject implements MyServerInt {
 
     @Override
     public void chat(String message) throws RemoteException {
-        System.out.println("[klient]\n    %s.".formatted(message));
+        System.out.println("[klient]\n    %s".formatted(message));
     }
 }

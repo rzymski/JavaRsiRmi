@@ -4,7 +4,7 @@ import java.rmi.Naming;
 import java.util.List;
 import java.util.Scanner;
 
-import mainpcserver.MyServerInt;
+import database.Person;
 
 public class MyClientMain {
     public static void main(String[] args) {
@@ -39,6 +39,16 @@ public class MyClientMain {
             int index = 4;
             Person result = myRemoteObject.getPersonByIndex(index);
             System.out.println("Szukam osoby o indexie = " + index);
+            System.out.println("Otrzymana z serwera odpowiedź: " + result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            MyServerInt myRemoteObject = (MyServerInt) Naming.lookup(serverAddress);
+            String name = "Kazimierz";
+            Person result = myRemoteObject.getPersonByName(name);
+            System.out.println("Szukam osoby o imieniu = " + name);
             System.out.println("Otrzymana z serwera odpowiedź: " + result);
         } catch (Exception e) {
             e.printStackTrace();

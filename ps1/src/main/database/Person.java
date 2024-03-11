@@ -1,4 +1,4 @@
-package mainpcserver;
+package database;
 
 import java.io.Serializable;
 
