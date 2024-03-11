@@ -62,7 +62,7 @@ public class MyClientMain {
             while(true) {
                 Scanner scanner = new Scanner(System.in);
                 System.out.print("Send message: ");
-                String message = scanner.nextLine();;
+                String message = scanner.nextLine();
                 if(message.equals("0")) { break; }
                 myRemoteObject.chat(message);
             }
