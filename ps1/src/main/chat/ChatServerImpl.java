@@ -29,16 +29,14 @@ public class ChatServerImpl extends UnicastRemoteObject implements ChatServer {
             if (!client.getClientId().equals(sender)) {
                 client.receiveMessage(sender, message);
             }
-            else {
-                System.out.println("Twoja wiadomosc: " + message);
-            }
+            System.out.println("Otrzymano wiadomosc: " + message);
         }
     }
 
     public static void main(String[] args) {
         try {
             System.setProperty("java.security.policy", "security.policy");
-            System.setProperty("java.rmi.server.codebase", "http://192.168.1.6/chat/");
+            System.setProperty("java.rmi.server.codebase", "http://192.168.43.20/chat/");
 
             LocateRegistry.createRegistry(1099);
             ChatServer chatServer = new ChatServerImpl();
