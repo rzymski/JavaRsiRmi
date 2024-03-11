@@ -9,7 +9,8 @@ public interface MyServerInt extends Remote{
 
     String calculator(String operation, String firstValue, String secondValue) throws RemoteException;
 
-
     Person getPersonByIndex(int index) throws RemoteException;
     List<Person> getAllPeople() throws RemoteException;
+
+    void chat(String message) throws RemoteException;
 }

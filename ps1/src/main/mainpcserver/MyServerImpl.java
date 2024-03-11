@@ -99,4 +99,9 @@ public class MyServerImpl extends UnicastRemoteObject implements MyServerInt {
         }
         return people;
     }
+
+    @Override
+    public void chat(String message) throws RemoteException {
+        System.out.println("[klient]\n    %s.".formatted(message));
+    }
 }

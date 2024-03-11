@@ -1,11 +1,19 @@
 package laptopserver;
 
+import mainpcserver.Person;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MyServerImpl extends UnicastRemoteObject implements MyServerInt {
     int i = 0;
+    String filePath = "D:\\programowanie\\java\\rsi\\JavaRsiRmi\\ps1\\src\\main\\bazadanych.txt";
     protected MyServerImpl() throws RemoteException {
         super();
     }
@@ -47,18 +55,56 @@ public class MyServerImpl extends UnicastRemoteObject implements MyServerInt {
         }
     }
 
-    // @Override
-    // public String calculator(String operation, String firstValue, String secondValue) throws RemoteException {
-    //     double first = Double.parseDouble(firstValue);
-    //     double second = Double.parseDouble(secondValue);
-    //     System.out.println("Kalkulator wykonuje operacje " + operation + " dla " + first + " i " + second);
-    //     double result = switch (operation) {
-    //         case "+" -> first + second;
-    //         case "-" -> first - second;
-    //         case "*" -> first * second;
-    //         case "/" -> first / second;
-    //         default -> 0;
-    //     };
-    //     return String.valueOf(result);
-    // }
+    private List<Person> loadDataFromFile(String filePath) {
+        List<Person> people = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            br.readLine();
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(";");
+                if (parts.length == 5) {
+                    int index = Integer.parseInt(parts[0]);
+                    String name = parts[1];
+                    String surname = parts[2];
+                    int age = Integer.parseInt(parts[3]);
+                    double salary = Double.parseDouble(parts[4].replace(',', '.'));
+                    Person person = new Person(index, name, surname, age, salary);
+                    people.add(person);
+                }
+            }
+            return people;
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Person getPersonByIndex(int index) throws RemoteException {
+        List<Person> people = loadDataFromFile(filePath);
+        //for (Person person : people) { System.out.println(person); }
+        for (Person person : people) {
+            if (person.getIndex() == index) {
+                System.out.println("Serwer znalazł w bazie danych osobę o indexie %d %s".formatted(index, person));
+                return person;
+            }
+        }
+        System.out.println("Serwer nie znalazł w bazie danych osoby o indexie %d".formatted(index));
+        return null;
+    }
+
+    @Override
+    public List<Person> getAllPeople() throws RemoteException {
+        List<Person> people = loadDataFromFile(filePath);
+        System.out.println("Serwer zwrócił listę %d osób.".formatted(people.size()));
+        for(Person person : people) {
+            System.out.println(person);
+        }
+        return people;
+    }
+
+    @Override
+    public void chat(String message) throws RemoteException {
+        System.out.println("[klient]\n    %s.".formatted(message));
+    }
 }

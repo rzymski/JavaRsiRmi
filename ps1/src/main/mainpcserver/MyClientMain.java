@@ -2,6 +2,7 @@ package mainpcserver;
 
 import java.rmi.Naming;
 import java.util.List;
+import java.util.Scanner;
 
 import mainpcserver.MyServerInt;
 
@@ -56,5 +57,17 @@ public class MyClientMain {
             e.printStackTrace();
         }
 
+        try {
+            MyServerInt myRemoteObject = (MyServerInt) Naming.lookup(serverAddress);
+            while(true) {
+                Scanner scanner = new Scanner(System.in);
+                System.out.print("Send message: ");
+                String message = scanner.nextLine();;
+                if(message.equals("0")) { break; }
+                myRemoteObject.chat(message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
