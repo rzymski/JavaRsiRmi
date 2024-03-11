@@ -10,11 +10,9 @@ import java.io.IOException;
 
 public class MyServerImpl extends UnicastRemoteObject implements MyServerInt {
     int i = 0;
-    private List<Person> people;
+    String filePath = "D:\\programowanie\\java\\rsi\\JavaRsiRmi\\ps1\\src\\main\\bazadanych.txt";
     protected MyServerImpl() throws RemoteException {
         super();
-        loadDataFromFile("D:\\programowanie\\java\\rsi\\JavaRsiRmi\\ps1\\src\\main\\bazadanych.txt");
-        //for (Person person : people) { System.out.println(person); }
     }
     @Override
     public String getDescription(String text) throws RemoteException {
@@ -54,8 +52,8 @@ public class MyServerImpl extends UnicastRemoteObject implements MyServerInt {
         }
     }
 
-    private void loadDataFromFile(String filePath) {
-        people = new ArrayList<>();
+    private List<Person> loadDataFromFile(String filePath) {
+        List<Person> people = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             br.readLine();
             String line;
@@ -71,18 +69,34 @@ public class MyServerImpl extends UnicastRemoteObject implements MyServerInt {
                     people.add(person);
                 }
             }
+            return people;
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace();
+            return null;
         }
     }
 
     @Override
     public Person getPersonByIndex(int index) throws RemoteException {
+        List<Person> people = loadDataFromFile(filePath);
+        //for (Person person : people) { System.out.println(person); }
         for (Person person : people) {
             if (person.getIndex() == index) {
+                System.out.println("Serwer znalazł w bazie danych osobę o indexie %d %s".formatted(index, person));
                 return person;
             }
         }
+        System.out.println("Serwer nie znalazł w bazie danych osoby o indexie %d".formatted(index));
         return null;
+    }
+
+    @Override
+    public List<Person> getAllPeople() throws RemoteException {
+        List<Person> people = loadDataFromFile(filePath);
+        System.out.println("Serwer zwrócił listę %d osób.".formatted(people.size()));
+        for(Person person : people) {
+            System.out.println(person);
+        }
+        return people;
     }
 }

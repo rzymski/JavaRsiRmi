@@ -1,6 +1,8 @@
 package mainpcserver;
 
 import java.rmi.Naming;
+import java.util.List;
+
 import mainpcserver.MyServerInt;
 
 public class MyClientMain {
@@ -33,10 +35,23 @@ public class MyClientMain {
 
         try {
             MyServerInt myRemoteObject = (MyServerInt) Naming.lookup(serverAddress);
-            int index = 1;
+            int index = 4;
             Person result = myRemoteObject.getPersonByIndex(index);
             System.out.println("Szukam osoby o indexie = " + index);
             System.out.println("Otrzymana z serwera odpowiedź: " + result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            MyServerInt myRemoteObject = (MyServerInt) Naming.lookup(serverAddress);
+            int index = 1;
+            List<Person> result = myRemoteObject.getAllPeople();
+            System.out.println("Chce dostać liste osob.");
+            System.out.println("Otrzymana z serwera odpowiedź: ");
+            for (Person person : result) {
+                System.out.println(person);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

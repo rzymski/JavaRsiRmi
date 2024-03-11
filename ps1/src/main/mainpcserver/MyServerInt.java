@@ -2,6 +2,7 @@ package mainpcserver;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 public interface MyServerInt extends Remote{
     String getDescription(String text) throws RemoteException;
@@ -10,4 +11,5 @@ public interface MyServerInt extends Remote{
 
 
     Person getPersonByIndex(int index) throws RemoteException;
+    List<Person> getAllPeople() throws RemoteException;
 }
