@@ -20,7 +20,7 @@ public class MyClientMain {
         try {
             MyServerInt myRemoteObject = (MyServerInt) Naming.lookup(serverAddress);
             String operation = "-";
-            String firstValue = "7.0";
+            String firstValue = "4.0";
             String secondValue = "1.9";
             String result = myRemoteObject.calculator(operation, firstValue, secondValue);
             System.out.println("Wysłano do servera: " + operation + " z " + firstValue + " " + secondValue);

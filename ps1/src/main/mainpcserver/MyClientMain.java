@@ -8,6 +8,7 @@ public class MyClientMain {
         System.setProperty("java.security.policy", "security.policy");
         //System.setSecurityManager(new SecurityManager());
         String serverAddress = "//192.168.1.6/mainpc";
+
         // try {
         //     MyServerInt myRemoteObject = (MyServerInt) Naming.lookup(serverAddress);
         //     String text = "Tajna wiadomosc";
@@ -17,6 +18,7 @@ public class MyClientMain {
         // } catch (Exception e) {
         //     e.printStackTrace();
         // }
+
         try {
             MyServerInt myRemoteObject = (MyServerInt) Naming.lookup(serverAddress);
             String operation = "/";
@@ -24,6 +26,16 @@ public class MyClientMain {
             String secondValue = "10.1";
             String result = myRemoteObject.calculator(operation, firstValue, secondValue);
             System.out.println("Wysłano do servera: " + firstValue + " " + operation + " " + secondValue);
+            System.out.println("Otrzymana z serwera odpowiedź: " + result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            MyServerInt myRemoteObject = (MyServerInt) Naming.lookup(serverAddress);
+            int index = 1;
+            Person result = myRemoteObject.getPersonByIndex(index);
+            System.out.println("Szukam osoby o indexie = " + index);
             System.out.println("Otrzymana z serwera odpowiedź: " + result);
         } catch (Exception e) {
             e.printStackTrace();

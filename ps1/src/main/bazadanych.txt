@@ -1,0 +1,6 @@
+index;name;surname;age;salary
+1;Piotr;Szumowski;23;10000
+2;Juliusz;Cezar;44;15000.50
+3;Kleopatra;Egipska;30;3200
+4;Kazimierz;Wielki;80;4000
+5;Adam;Smok;50;2500,50
