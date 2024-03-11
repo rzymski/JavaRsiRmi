@@ -3,12 +3,12 @@ package laptopserver;
 import database.Person;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class MyServerImpl extends UnicastRemoteObject implements MyServerInt {
     int i = 0;
