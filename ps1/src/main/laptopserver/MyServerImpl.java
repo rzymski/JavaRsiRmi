@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class MyServerImpl extends UnicastRemoteObject implements MyServerInt {
     int i = 0;
-    String filePath = "C:\\Users\\Piotrek\\Downloads\\Desktop\\rsi\\nowe\\JavaRsiRmi\\ps1\\src\\main\\database\\laptopserver";
+    String filePath = "C:\\Users\\Piotrek\\Downloads\\Desktop\\rsi\\nowe\\JavaRsiRmi\\ps1\\src\\main\\database\\bazadanych.txt";
     protected MyServerImpl() throws RemoteException {
         super();
     }
