@@ -68,7 +68,6 @@ public class TicTacToeClientImpl extends UnicastRemoteObject implements TicTacTo
                     TimeUnit.SECONDS.sleep(1);
                 }
             }
-            ticTacToeServer.endServer();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -123,11 +123,6 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
         return boardDraw;
     }
 
-    @Override
-    public void endServer() throws RemoteException {
-        System.exit(0);
-    }
-
     public static void main(String[] args) {
         try {
             System.setProperty("java.security.policy", "security.policy");
