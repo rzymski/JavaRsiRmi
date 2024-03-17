@@ -72,23 +72,34 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
         return true;
     }
 
+    // -2 bledny ruch
+    // -1 to nie twoj ruch
+    // 0 ok
+    // 1 koniec gry wygrana
+    // 2 koniec gry remis
     @Override
-    public void makeMove(int clientId, int row, int col) throws RemoteException {
-        if(clientId != playerMove){ return; }
+    public int makeMove(int clientId, int row, int col) throws RemoteException {
+        if(clientId != playerMove){ return -1; }
 
         char symbol = playerMove == 0 ? 'X' : 'O';
         if (isValidMove(row, col)) {
             board[row][col] = symbol;
             notifyPlayers(getBoard());
-            playerMove = playerMove+1 % 2;
+            playerMove = (playerMove+1) % 2;
             System.out.println("Ruch gracza nr. %d".formatted(playerMove));
-        }
-        if(checkWin(symbol)) {
-            notifyPlayers("Koniec gry. Wygrał gracz nr. %d".formatted(clientId));
-        } else {
-            if(isBoardFull()){
-                notifyPlayers("Koniec gry. Remis.");
+
+            if(checkWin(symbol)) {
+                notifyPlayers("Koniec gry. Wygrał gracz nr. %d".formatted(clientId));
+                return 1;
+            } else {
+                if(isBoardFull()){
+                    notifyPlayers("Koniec gry. Remis.");
+                    return 2;
+                }
             }
+            return 0;
+        } else {
+            return -2;
         }
     }
 

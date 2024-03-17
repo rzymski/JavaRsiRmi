@@ -29,12 +29,12 @@ public class TicTacToeClientImpl extends UnicastRemoteObject implements TicTacTo
         return "Klient nr. %d".formatted(clientId);
     }
 
-    public void tryMakeMove(TicTacToeServer server) throws RemoteException {
+    public int tryMakeMove(TicTacToeServer server) throws RemoteException {
         System.out.println("Twoj ruch. Podaj wiersz (0-2) i kolumne (0-2) oddzielone spacją:");
         Scanner scanner = new Scanner(System.in);
         int row = scanner.nextInt();
         int col = scanner.nextInt();
-        server.makeMove(clientId, row, col);
+        return server.makeMove(clientId, row, col);
     }
 
     public static void main(String[] args) {
@@ -49,7 +49,10 @@ public class TicTacToeClientImpl extends UnicastRemoteObject implements TicTacTo
             while(true){
                 myMove = ticTacToeServer.checkGameState(client.getClientId());
                 if(myMove == 0){
-                    client.tryMakeMove(ticTacToeServer);
+                    int result = client.tryMakeMove(ticTacToeServer);
+                    if(result == -2) { System.out.println("Niewlasciwy ruch. Podaj ruch jeszcze raz."); }
+                    if(result == 1) { System.out.println("Wygrałeś."); break; }
+                    if(result == 2) { System.out.println("Remis."); break; }
                 } else{
                     TimeUnit.SECONDS.sleep(1);
                 }

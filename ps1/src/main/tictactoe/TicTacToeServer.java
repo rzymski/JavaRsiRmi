@@ -7,5 +7,5 @@ public interface TicTacToeServer extends Remote {
     int registerClient(TicTacToeClient client) throws RemoteException;
     void notifyPlayers(String message) throws RemoteException;
     int checkGameState(int clientId) throws RemoteException;
-    void makeMove(int clientId, int row, int col) throws RemoteException;
+    int makeMove(int clientId, int row, int col) throws RemoteException;
 }
