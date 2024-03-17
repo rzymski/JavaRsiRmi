@@ -53,7 +53,7 @@ public class TicTacToeClientImpl extends UnicastRemoteObject implements TicTacTo
             TicTacToeServer ticTacToeServer = (TicTacToeServer) Naming.lookup(serverUrl);
             TicTacToeClientImpl client = new TicTacToeClientImpl();
             client.setClientId(ticTacToeServer.registerClient(client));
-            System.out.println("K Zarejestowales sie do gry. Jesteś graczem nr. %d".formatted(client.getClientId()));
+            System.out.println("Zarejestowales sie do gry. Jesteś graczem nr. %d".formatted(client.getClientId()));
             int myMove;
             while(true){
                 myMove = ticTacToeServer.checkGameState(client.getClientId());
