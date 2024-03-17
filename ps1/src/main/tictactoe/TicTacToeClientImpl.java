@@ -3,6 +3,7 @@ package tictactoe;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -30,13 +31,20 @@ public class TicTacToeClientImpl extends UnicastRemoteObject implements TicTacTo
     }
 
     public int tryMakeMove(TicTacToeServer server) throws RemoteException {
-        System.out.println(server.getBoard());
-        System.out.println("Twoj ruch. Podaj wiersz (0-2) i kolumne (0-2) oddzielone spacją:");
-        server.sendMessageToOtherPlayer((clientId+1)%2, "Oczekiwanie na ruch gracza nr. %d".formatted(clientId));
         Scanner scanner = new Scanner(System.in);
-        int row = scanner.nextInt();
-        int col = scanner.nextInt();
-        return server.makeMove(clientId, row, col);
+        while (true) {
+            try {
+                System.out.println(server.getBoard());
+                System.out.println("Twój ruch. Podaj wiersz (0-2) i kolumnę (0-2) oddzielone spacją:");
+                server.sendMessageToPlayer((clientId + 1) % 2, "Oczekiwanie na ruch gracza nr. " + clientId);
+                int row = scanner.nextInt();
+                int col = scanner.nextInt();
+                return server.makeMove(clientId, row, col);
+            } catch (InputMismatchException e) {
+                System.out.println("Niewłaściwy format danych. Podaj ruch jeszcze raz.");
+                scanner.nextLine(); // Czyści bufor wejściowy
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -44,8 +52,7 @@ public class TicTacToeClientImpl extends UnicastRemoteObject implements TicTacTo
             String serverUrl = "//192.168.1.6/TicTacToeServer";
             TicTacToeServer ticTacToeServer = (TicTacToeServer) Naming.lookup(serverUrl);
             TicTacToeClientImpl client = new TicTacToeClientImpl();
-            int localClientId = ticTacToeServer.registerClient(client);
-            client.setClientId(localClientId);
+            client.setClientId(ticTacToeServer.registerClient(client));
             System.out.println("K Zarejestowales sie do gry. Jesteś graczem nr. %d".formatted(client.getClientId()));
             int myMove;
             while(true){
@@ -61,9 +68,10 @@ public class TicTacToeClientImpl extends UnicastRemoteObject implements TicTacTo
                     TimeUnit.SECONDS.sleep(1);
                 }
             }
-
+            ticTacToeServer.endServer();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.exit(0);
     }
 }

@@ -32,7 +32,7 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
     }
 
     @Override
-    public void sendMessageToOtherPlayer(int clientId, String message) throws RemoteException {
+    public void sendMessageToPlayer(int clientId, String message) throws RemoteException {
         clients[clientId].receiveMessage(message);
         System.out.println("Wysłano wiadomosc do gracza nr. %d: %s".formatted(clientId, message));
     }
@@ -61,13 +61,13 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
             return 2;
         }
         if(checkWin('X')) {
-            notifyPlayers("Koniec gry. Wygrał gracz nr. 0");
+            sendMessageToPlayer(clientId, "Koniec gry. Wygrał gracz nr. 0\n"+getBoard());
             return 3;
         } else if(checkWin('O')) {
-            notifyPlayers("Koniec gry. Wygrał gracz nr. 1");
+            sendMessageToPlayer(clientId,"Koniec gry. Wygrał gracz nr. 1\n"+getBoard());
             return 4;
         } else if(isBoardFull()){
-            notifyPlayers("Koniec gry. Remis.");
+            sendMessageToPlayer(clientId,"Koniec gry. Remis.\n"+getBoard());
             return 5;
         }
         return playerMove == clientId ? 0 : 1;
@@ -82,7 +82,7 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
         if (isValidMove(row, col)) {
             board[row][col] = symbol;
             //notifyPlayers(getBoard());
-            sendMessageToOtherPlayer(clientId, getBoard());
+            sendMessageToPlayer(clientId, getBoard());
             playerMove = (playerMove+1) % 2;
             System.out.println("Ruch gracza nr. %d".formatted(playerMove));
             return 0;
@@ -121,6 +121,11 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
     public String getBoard() throws RemoteException {
         String boardDraw = "\n   |   |   \n %c | %c | %c \n   |   |   \n---+---+---\n   |   |   \n %c | %c | %c \n   |   |   \n---+---+---\n   |   |   \n %c | %c | %c ".formatted(board[0][0], board[0][1], board[0][2],board[1][0],board[1][1],board[1][2], board[2][0], board[2][1], board[2][2]);
         return boardDraw;
+    }
+
+    @Override
+    public void endServer() throws RemoteException {
+        System.exit(0);
     }
 
     public static void main(String[] args) {
