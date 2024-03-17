@@ -34,8 +34,7 @@ public class TicTacToeClientImpl extends UnicastRemoteObject implements TicTacTo
         Scanner scanner = new Scanner(System.in);
         int row = scanner.nextInt();
         int col = scanner.nextInt();
-        int result = server.makeMove(clientId, row, col);
-        System.out.println("Wynik %d".formatted(result));
+        server.makeMove(clientId, row, col);
     }
 
     public static void main(String[] args) {

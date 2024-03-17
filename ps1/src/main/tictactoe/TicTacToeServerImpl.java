@@ -1,14 +1,9 @@
 package tictactoe;
 
-import chat.ChatClient;
-
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacToeServer {
     private TicTacToeClient[] clients;
@@ -31,18 +26,15 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
         if (numberOfPlayers < 2){
             clients[numberOfPlayers] = client;
             numberOfPlayers++;
-            System.out.println("Zarejestrowano gracza nr. %d".formatted(numberOfPlayers));
+            System.out.println("Zarejestrowano gracza nr. %d".formatted(numberOfPlayers-1));
         }
-        return numberOfPlayers;
+        return numberOfPlayers-1;
     }
 
     @Override
-    public void broadcastMessage(int clientId, String message) throws RemoteException {
+    public void notifyPlayers(String message) throws RemoteException {
         for (int i = 0; i < numberOfPlayers; i++) {
-            System.out.println("G = %d C = %d".formatted(clients[i].getClientId(), clientId));
-            if (clients[i].getClientId() != clientId) {
-                clients[i].receiveMessage(message);
-            }
+            clients[i].receiveMessage(message);
             System.out.println("Wysłano wiadomosc: " + message);
         }
     }
@@ -52,12 +44,9 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
         String message = "";
         if (numberOfPlayers < 2){
             message = "Gra się jeszcze nie rozpoczęła. Oczekiwanie na dołączenie drugiego gracza.";
-            broadcastMessage(0, message);
+            notifyPlayers(message);
             return 2;
         }
-//        else {
-//            message = "Ruch gracza nr. %d".formatted(playerMove);
-//        }
         return playerMove == clientId ? 0 : 1;
     }
 
@@ -83,45 +72,22 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
         return true;
     }
 
-//    @Override
-//    public void makeMove(int clientId, int row, int col) throws RemoteException {
-//        char playerSymbol = (clientId == 0) ? 'x' : '0';
-//        displayBoard(clientId);
-//
-//        if (checkWin(board, playerSymbol)) {
-//            System.out.println("Gratulacje. Wygrałeś!");
-//            System.exit(0);
-//        } else if (isBoardFull(board)) {
-//            System.out.println("Remis.");
-//            System.exit(0);
-//        } else {
-//            System.out.println("Twoj ruch. Podaj wiersz (0-2) i kolumne (0-2) oddzielone spacją:");
-//            Scanner scanner = new Scanner(System.in);
-//            int row = scanner.nextInt();
-//            int col = scanner.nextInt();
-//        }
-//    }
-
-
     @Override
-    public int makeMove(int clientId, int row, int col) throws RemoteException {
-        if(clientId != playerMove){ return -1; }
+    public void makeMove(int clientId, int row, int col) throws RemoteException {
+        if(clientId != playerMove){ return; }
 
         char symbol = playerMove == 0 ? 'X' : 'O';
         if (isValidMove(row, col)) {
             board[row][col] = symbol;
-            broadcastMessage(0, getBoard());
+            notifyPlayers(getBoard());
             playerMove = playerMove+1 % 2;
+            System.out.println("Ruch gracza nr. %d".formatted(playerMove));
         }
         if(checkWin(symbol)) {
-            broadcastMessage(0, "Koniec gry.");
-            return 0;
+            notifyPlayers("Koniec gry. Wygrał gracz nr. %d".formatted(clientId));
         } else {
             if(isBoardFull()){
-                broadcastMessage(0, "Koniec gry. Remis.");
-                return 1;
-            } else{
-                return 2;
+                notifyPlayers("Koniec gry. Remis.");
             }
         }
     }
