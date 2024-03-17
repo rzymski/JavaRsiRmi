@@ -31,6 +31,7 @@ public class TicTacToeClientImpl extends UnicastRemoteObject implements TicTacTo
 
     public int tryMakeMove(TicTacToeServer server) throws RemoteException {
         System.out.println("Twoj ruch. Podaj wiersz (0-2) i kolumne (0-2) oddzielone spacją:");
+        server.sendMessageToOtherPlayer(clientId, "Oczekiwanie na ruch gracza nr. %d".formatted(clientId));
         Scanner scanner = new Scanner(System.in);
         int row = scanner.nextInt();
         int col = scanner.nextInt();
@@ -53,7 +54,11 @@ public class TicTacToeClientImpl extends UnicastRemoteObject implements TicTacTo
                     if(result == -2) { System.out.println("Niewlasciwy ruch. Podaj ruch jeszcze raz."); }
                     if(result == 1) { System.out.println("Wygrałeś."); break; }
                     if(result == 2) { System.out.println("Remis."); break; }
-                } else{
+                }
+                else if (myMove == 3) {
+                    break;
+                }
+                else{
                     TimeUnit.SECONDS.sleep(1);
                 }
             }

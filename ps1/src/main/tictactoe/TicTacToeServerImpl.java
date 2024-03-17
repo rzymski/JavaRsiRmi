@@ -10,6 +10,7 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
     private int numberOfPlayers = 0;
     private char[][] board;
     private int playerMove = 0;
+    private boolean endOfGame = false;
 
     protected TicTacToeServerImpl() throws RemoteException {
         clients = new TicTacToeClient[2];
@@ -32,6 +33,13 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
     }
 
     @Override
+    public void sendMessageToOtherPlayer(int clientId, String message) throws RemoteException {
+        int receiver = (clientId+1)%2;
+        clients[receiver].receiveMessage(message);
+        System.out.println("Wysłano wiadomosc dp %d: %s".formatted(receiver, message));
+    }
+
+    @Override
     public void notifyPlayers(String message) throws RemoteException {
         for (int i = 0; i < numberOfPlayers; i++) {
             clients[i].receiveMessage(message);
@@ -47,6 +55,9 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
             notifyPlayers(message);
             return 2;
         }
+        if(endOfGame){
+            return 3;
+        }
         return playerMove == clientId ? 0 : 1;
     }
 
@@ -54,6 +65,7 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
         for (int i = 0; i < 3; i++) {
             if ((board[i][0] == symbol && board[i][1] == symbol && board[i][2] == symbol) ||
                     (board[0][i] == symbol && board[1][i] == symbol && board[2][i] == symbol)) {
+                endOfGame = true;
                 return true;
             }
         }
@@ -65,6 +77,7 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 if (board[i][j] == ' ') {
+                    endOfGame = true;
                     return false;
                 }
             }
