@@ -10,7 +10,6 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
     private int numberOfPlayers = 0;
     private char[][] board;
     private int playerMove = 0;
-    private boolean endOfGame = false;
 
     protected TicTacToeServerImpl() throws RemoteException {
         clients = new TicTacToeClient[2];
@@ -34,9 +33,8 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
 
     @Override
     public void sendMessageToOtherPlayer(int clientId, String message) throws RemoteException {
-        int receiver = (clientId+1)%2;
-        clients[receiver].receiveMessage(message);
-        System.out.println("Wysłano wiadomosc dp %d: %s".formatted(receiver, message));
+        clients[clientId].receiveMessage(message);
+        System.out.println("Wysłano wiadomosc do gracza nr. %d: %s".formatted(clientId, message));
     }
 
     @Override
@@ -55,34 +53,7 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
             notifyPlayers(message);
             return 2;
         }
-        if(endOfGame){
-            return 3;
-        }
         return playerMove == clientId ? 0 : 1;
-    }
-
-    private boolean checkWin(char symbol) {
-        for (int i = 0; i < 3; i++) {
-            if ((board[i][0] == symbol && board[i][1] == symbol && board[i][2] == symbol) ||
-                    (board[0][i] == symbol && board[1][i] == symbol && board[2][i] == symbol)) {
-                endOfGame = true;
-                return true;
-            }
-        }
-        return (board[0][0] == symbol && board[1][1] == symbol && board[2][2] == symbol) ||
-                (board[0][2] == symbol && board[1][1] == symbol && board[2][0] == symbol);
-    }
-
-    private boolean isBoardFull() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board[i][j] == ' ') {
-                    endOfGame = true;
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     // -2 bledny ruch
@@ -116,10 +87,33 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
         }
     }
 
+    private boolean checkWin(char symbol) {
+        for (int i = 0; i < 3; i++) {
+            if ((board[i][0] == symbol && board[i][1] == symbol && board[i][2] == symbol) ||
+                    (board[0][i] == symbol && board[1][i] == symbol && board[2][i] == symbol)) {
+                return true;
+            }
+        }
+        return (board[0][0] == symbol && board[1][1] == symbol && board[2][2] == symbol) ||
+                (board[0][2] == symbol && board[1][1] == symbol && board[2][0] == symbol);
+    }
+
+    private boolean isBoardFull() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == ' ') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private boolean isValidMove(int row, int col) {
         return row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == ' ';
     }
 
+    @Override
     public String getBoard() throws RemoteException {
         String boardDraw = "\n   |   |   \n %c | %c | %c \n   |   |   \n---+---+---\n   |   |   \n %c | %c | %c \n   |   |   \n---+---+---\n   |   |   \n %c | %c | %c ".formatted(board[0][0], board[0][1], board[0][2],board[1][0],board[1][1],board[1][2], board[2][0], board[2][1], board[2][2]);
         return boardDraw;
