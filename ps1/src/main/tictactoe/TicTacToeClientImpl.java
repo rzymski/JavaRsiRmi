@@ -30,10 +30,9 @@ public class TicTacToeClientImpl extends UnicastRemoteObject implements TicTacTo
     }
 
     public int tryMakeMove(TicTacToeServer server) throws RemoteException {
-        String board = server.getBoard();
-        System.out.println(board);
+        System.out.println(server.getBoard());
         System.out.println("Twoj ruch. Podaj wiersz (0-2) i kolumne (0-2) oddzielone spacją:");
-        server.sendMessageToOtherPlayer((clientId+1)%2, "%s\nOczekiwanie na ruch gracza nr. %d".formatted(board, clientId));
+        server.sendMessageToOtherPlayer((clientId+1)%2, "Oczekiwanie na ruch gracza nr. %d".formatted(clientId));
         Scanner scanner = new Scanner(System.in);
         int row = scanner.nextInt();
         int col = scanner.nextInt();
@@ -53,10 +52,11 @@ public class TicTacToeClientImpl extends UnicastRemoteObject implements TicTacTo
                 myMove = ticTacToeServer.checkGameState(client.getClientId());
                 if(myMove == 0){
                     int result = client.tryMakeMove(ticTacToeServer);
-                    if(result == -2) { System.out.println("Niewlasciwy ruch. Podaj ruch jeszcze raz."); }
-                    if(result == 1) { System.out.println("Wygrałeś."); break; }
-                    if(result == 2) { System.out.println("Remis."); break; }
+                    if(result == -1) { System.out.println("Niewlasciwy ruch. Podaj ruch jeszcze raz."); }
                 }
+                else if((myMove == 3 && client.getClientId() == 0) || (myMove== 4 && client.getClientId() == 1)) { System.out.println("Wygrałeś."); break; }
+                else if((myMove == 4 && client.getClientId() == 0) || (myMove== 3 && client.getClientId() == 1)) { System.out.println("Przegrałeś."); break; }
+                else if(myMove== 5) { System.out.println("Remis."); break; }
                 else{
                     TimeUnit.SECONDS.sleep(1);
                 }

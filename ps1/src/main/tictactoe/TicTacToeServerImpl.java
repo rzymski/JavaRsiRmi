@@ -45,6 +45,13 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
         }
     }
 
+    // 0 twoj ruch
+    // 1 nie twoj ruch
+    // 2 nie ma dwoch graczy
+    // 3 koniec gry wygrał gracz nr. 0
+    // 4 koniec gry wygrał gracz nr. 1
+    // 5 koniec gry remis
+
     @Override
     public int checkGameState(int clientId) throws RemoteException {
         String message = "";
@@ -53,37 +60,34 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
             notifyPlayers(message);
             return 2;
         }
+        if(checkWin('X')) {
+            notifyPlayers("Koniec gry. Wygrał gracz nr. 0");
+            return 3;
+        } else if(checkWin('O')) {
+            notifyPlayers("Koniec gry. Wygrał gracz nr. 1");
+            return 4;
+        } else if(isBoardFull()){
+            notifyPlayers("Koniec gry. Remis.");
+            return 5;
+        }
         return playerMove == clientId ? 0 : 1;
     }
 
-    // -2 bledny ruch
-    // -1 to nie twoj ruch
+    // -1 bledny ruch
     // 0 ok
-    // 1 koniec gry wygrana
-    // 2 koniec gry remis
     @Override
     public int makeMove(int clientId, int row, int col) throws RemoteException {
         if(clientId != playerMove){ return -1; }
-
         char symbol = playerMove == 0 ? 'X' : 'O';
         if (isValidMove(row, col)) {
             board[row][col] = symbol;
-            notifyPlayers(getBoard());
+            //notifyPlayers(getBoard());
+            sendMessageToOtherPlayer(clientId, getBoard());
             playerMove = (playerMove+1) % 2;
             System.out.println("Ruch gracza nr. %d".formatted(playerMove));
-
-            if(checkWin(symbol)) {
-                notifyPlayers("Koniec gry. Wygrał gracz nr. %d".formatted(clientId));
-                return 1;
-            } else {
-                if(isBoardFull()){
-                    notifyPlayers("Koniec gry. Remis.");
-                    return 2;
-                }
-            }
             return 0;
         } else {
-            return -2;
+            return -1;
         }
     }
 
