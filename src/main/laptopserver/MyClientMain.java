@@ -10,7 +10,7 @@ public class MyClientMain {
     public static void main(String[] args) {
         System.setProperty("java.security.policy", "security.policy");
         //System.setSecurityManager(new SecurityManager());
-        String serverAddress = "//192.168.1.13/laptop";
+        String serverAddress = "//192.168.1.18/laptop";
 
         try {
             MyServerInt myRemoteObject = (MyServerInt) Naming.lookup(serverAddress);

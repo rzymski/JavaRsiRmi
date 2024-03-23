@@ -14,14 +14,14 @@ public class MyServerMain {
 //            }
 
             //System.setProperty("java.rmi.server.codebase","file:\\D:\\programowanie\\java\\rsi\\ps1\\out\\production");
-            System.setProperty("java.rmi.server.codebase", "http://82.139.1.13/laptop/");
+            System.setProperty("java.rmi.server.codebase", "http://82.139.1.18/laptop/");
 
             LocateRegistry.createRegistry(1099);
 
             System.out.println("Codebase: " + System.getProperty("java.rmi.server.codebase"));
 
             MyServerImpl obj1 = new MyServerImpl();
-            Naming.rebind("//192.168.1.13/laptop", obj1);
+            Naming.rebind("//192.168.1.18/laptop", obj1);
             System.out.println("Serwer oczekuje ...");
         } catch (RemoteException | MalformedURLException e) {
             e.printStackTrace();
