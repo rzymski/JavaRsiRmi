@@ -49,7 +49,7 @@ public class TicTacToeClientImpl extends UnicastRemoteObject implements TicTacTo
 
     public static void main(String[] args) {
         try {
-            String serverUrl = "//192.168.1.6/TicTacToeServer";
+            String serverUrl = "//192.168.1.15/TicTacToeServer";
             TicTacToeServer ticTacToeServer = (TicTacToeServer) Naming.lookup(serverUrl);
             TicTacToeClientImpl client = new TicTacToeClientImpl();
             client.setClientId(ticTacToeServer.registerClient(client));

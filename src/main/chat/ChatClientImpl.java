@@ -30,7 +30,7 @@ public class ChatClientImpl extends UnicastRemoteObject implements ChatClient {
             String name = scanner.nextLine();
             System.out.println("Welcome to the chat, " + name + "! Enter 'exit' to leave.");
 
-            String serverUrl = "//192.168.43.20/ChatServer";
+            String serverUrl = "//192.168.1.15/ChatServer";
             ChatServer chatServer = (ChatServer) Naming.lookup(serverUrl);
             ChatClientImpl client = new ChatClientImpl(name);
             chatServer.registerClient(client);

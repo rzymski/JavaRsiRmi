@@ -126,7 +126,7 @@ public class TicTacToeServerImpl extends UnicastRemoteObject implements TicTacTo
     public static void main(String[] args) {
         try {
             System.setProperty("java.security.policy", "security.policy");
-            System.setProperty("java.rmi.server.codebase", "http://192.168.1.6/tictactoe/");
+            System.setProperty("java.rmi.server.codebase", "http://192.168.1.15/tictactoe/");
 
             LocateRegistry.createRegistry(1099);
             TicTacToeServer ticTacToeServer = new TicTacToeServerImpl();
